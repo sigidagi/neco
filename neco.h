@@ -19,6 +19,16 @@
 #include <sys/socket.h>
 #endif
 
+#ifdef __cplusplus
+#define ALIGNAS(x) alignas(x)
+#else
+#define ALIGNAS(x) _Alignas(x)
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // basic operations
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +116,7 @@ int neco_gen_close(neco_gen *gen);
 /// to a variable or set of variables and helps to avoid data inconsistencies
 /// due to race conditions.
 /// @{
-typedef struct { _Alignas(16) char _[48]; } neco_mutex;
+typedef struct { ALIGNAS(16) char _[48]; } neco_mutex;
 
 #define NECO_MUTEX_INITIALIZER { 0 }
 
@@ -128,7 +138,7 @@ int neco_mutex_tryrdlock(neco_mutex *mutex);
 /// At the same time, neco_waitgroup_wait() can be used to block until all
 /// coroutines are completed.
 /// @{
-typedef struct { _Alignas(16) char _[48]; } neco_waitgroup;
+typedef struct { ALIGNAS(16) char _[48]; } neco_waitgroup;
 
 #define NECO_WAITGROUP_INITIALIZER { 0 }
 
@@ -143,7 +153,7 @@ int neco_waitgroup_wait_dl(neco_waitgroup *waitgroup, int64_t deadline);
 /// A condition variable is a synchronization mechanism that allows coroutines
 /// to suspend execution until some condition is true. 
 /// @{
-typedef struct { _Alignas(16) char _[48]; } neco_cond;
+typedef struct { ALIGNAS(16) char _[48]; } neco_cond;
 #define NECO_COND_INITIALIZER { 0 }
 
 int neco_cond_init(neco_cond *cond);
@@ -445,6 +455,10 @@ void __neco_c1(int);
 void __neco_exit_prog(int);
 
 ////////////////////////////////////////////////////////////////////////////////
+
+#ifdef __cplusplus
+}
+#endif
 
 #ifndef EAI_SYSTEM
 #define EAI_SYSTEM 11
